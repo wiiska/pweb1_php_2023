@@ -18,7 +18,7 @@
         $db = new DB();
         $db->conn();
 
-        $dados = $db->select("aluno1");
+        $dados = $db->select("aluno");
 
         
         
@@ -32,7 +32,7 @@
             'telefone'=>"332233",
 
         ];
-        $db->insert("aluno1", $dadosAluno);
+        $db->insert("aluno", $dadosAluno);
         //var_dump($dados);
     ?>
 
