@@ -36,39 +36,41 @@ try {
         return $st->fetchAll(PDO::FETCH_CLASS);
     }
 
-    public function insert($nome_tabela, $dados){
+    public function find($nome_tabela){
         $conn = $this->conn();
-        $sql = "INSERT INTO $nome_tabela (";
-        
-        $flag = 0;
-        $vetorDados = [];
-        foreach ($dados as $campo => $valor){
-            if($flag == 0){
-            $sql .= "$campo";
-            } else {
-                $sql .= ", $campo";
-            }
-            $flag = 1;
-
-        }
-        $sql .= ") values (";
-
-        foreach ($dados as $campo => $valor){
-            if($flag == 0){
-            $sql .= "$campo";
-            } else {
-                $sql .= ", $campo";
-            }
-            $flag = 1;
-            $vetorDados[] = $valor;
-        }
-        
-        $sql .= ")"; 
+        $sql = "SELECT * FROM $nome_tabela WHERE id = ?";
 
         $st = $conn->prepare($sql);
+        $st->execute();
 
-        $st->execute($vetorDados);
+        return $st->fetchObject();
     }
+
+    public function insert($nome_tabela, $dados){
+        $conn = $this->conn();
+        $sql = "INSERT INTO $nome_tabela(nome, cpf, telefone) 
+                values (?,?,?)";
+
+        $st = $conn->prepare($sql);
+        $st->execute([
+            $dados['nome'],
+            $dados['cpf'],  
+            $dados['telefone'],
+        ]);
+    }
+
+    public function update($nome_tabela, $dados){
+        $conn = $this->conn();
+        $sql = "UPDATE $nome_tabela SET nome=?, cpf=?, telefone=?, WHERE id=? "; 
+        $st = $conn->prepare($sql);
+        $st->execute([
+            $dados['nome'],
+            $dados['cpf'],  
+            $dados['telefone'],
+        ]);
+    }
+
+    
         public function destroy($nome_tabela, $id){
             $conn = $this->conn();
             $sql = "DELETE FROM $nome_tabela where id = ?";
