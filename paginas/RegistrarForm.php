@@ -6,51 +6,50 @@ include '../db.class.php';
     $db = new DB();
     $db->conn();
 
-    if(!empty($_POST['id'])){
-        $db->update("usuario", $_POST);
-        header("location: usuarioList.php");
 
-    }
 
     if($_POST){
         
-    $db->insert("usuario", $_POST);
       //  var_dump($_POST);
-      header("location: usuarioList.php");
+if($_POST['senha'] === $_POST['c_senha']){
+
+  $_POST['senha'] = password_hash($_POST['senha'],PASSWORD_BCRYPT);
+  unset($_POST['c_senha']);
+
+  $db->insert("usuario", $_POST);
+  header("location: LoginForm.php");
+} else{
+  echo "<b style='color:red;'>As senhas não coincidem</b>";
+}
+
+      
 
     }
-    if(!empty($_GET['id'])){
-        $usuario = $db->find("usuario",$_GET['id']);
-        //var_dump($usuario);
-    }
+
     
 ?>
 
 <h2>Sistema academico</h2>
 <h3>Formulário registrar usuario</h3>
 
-<form action="usuarioForm.php" method="post">
+<form action="RegistrarForm.php" method="post">
 
   <label for="nome">Nome</label><br>
-  <input type="text" name="nome">
+  <input type="text" name="nome"><br>
  
     <label for="email">Email</label><br>
-    <input type="email" name="email">
+    <input type="email" name="email"><br>
 
     <label for="cpf">CPF</label><br>
-    <input type="text" name="cpf">
+    <input type="text" name="cpf"><br>
 
     <label for="senha">Senha</label><br>
-    <input type="password" name="senha">
+    <input type="password" name="senha"><br>
 
     <label for="c_senha">Confirmar Senha</label><br>
-    <input type="password" name="c_senha">
+    <input type="password" name="c_senha"><br>
 
-   
-
-
-    <label for="telefone">Telefone</label><br>
-    <input type="text" name="telefone">
+    
   
 
 <button type ="submit">Salvar</button>

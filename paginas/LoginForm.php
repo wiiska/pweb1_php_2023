@@ -3,50 +3,40 @@
 include './header.php';
 include '../db.class.php';
 
-    $db = new DB();
-    $db->conn();
+$db = new DB();
+$db->conn();
 
-    if(!empty($_POST['id'])){
-        $db->update("aluno", $_POST);
-        header("location: AlunoList.php");
-
+if (!empty($_POST['id'])) {
+    $usuario = $db->login('usuario', $_POST);
+    if($usuario !== "Error"){
+        $_SESSION['usuario'] = $usuario;
+        header('location: Main.php');
+    }else{
+        echo "<b style='color:red'>Login e/ou senha errado, por favor tente novamente</b>";
     }
-
-    if($_POST){
-        
-    $db->insert("aluno", $_POST);
-      //  var_dump($_POST);
-      header("location: AlunoList.php");
-
-    }
-    if(!empty($_GET['id'])){
-        $aluno = $db->find("aluno",$_GET['id']);
-        //var_dump($aluno);
-    }
-    
+}
 ?>
 
-<h3>Formulário Aluno</h3>
+<h2>Sistema academico</h2>
+<h3>Login</h3>      
 
-<form action="AlunoForm.php" method="post">
+
+<form action="LoginForm.php" method="post">
 <input type="hidden" name="id"
-    value="<?php echo !empty($aluno->id) ? $aluno->id:" "?>"><br>
+    value="<?php echo !empty($aluno->id) ? $aluno->id : ' '; ?>"><br>
 
-    <label for="nome">Nome</label><br>
-    <input type="text" name="nome"
-    value="<?php echo !empty($aluno->nome) ? $aluno->nome:" "?>"><br>
+
     
 
     <label for="cpf">CPF</label><br>
-    <input type="text" name="cpf"
-    value="<?php echo !empty($aluno->cpf) ? $aluno->cpf:" "?>"><br>
+    <input type="text" name="cpf"><br>
 
+    <label for="senha">Senha</label><br>
+    <input type="password" name="senha"><br>
 
-    <label for="telefone">Telefone</label><br>
-    <input type="text" name="telefone"
-    value="<?php echo !empty($aluno->telefone) ? $aluno->telefone:" "?>"><br>
+    <button type="submit">Logar</button>
+    <a href="RegistrarForm.php">Cadastrar-se</a>
 
-<button type ="submit"><?php echo !empty($_GET['id']) ? "Editar" : "Salvar"?></button>
 
 </form>
-<?php include './footer.php' ?>
+<?php include './footer.php'; ?>
